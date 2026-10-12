@@ -145,7 +145,14 @@ fun AddAssignmentScreen(navController: NavHostController, modifier: Modifier = M
                 Row(modifier = modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Button(onClick = {}) { Text("Cancel") }
+                    Button(onClick = {
+                        name = ""
+                        course = ""
+                        date  = ""
+                        desc = ""
+                        selectedPriority = ""
+                        tobeNotified = false
+                    }) { Text("Cancel") }
                     Button(
                         enabled = (name.isNotEmpty() and course.isNotEmpty() and date.isNotEmpty()),
                         onClick = {}) { Text("Save Assignment") }

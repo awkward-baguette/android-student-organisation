@@ -65,6 +65,87 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navC = rememberNavController()
 
+            var priority by rememberSaveable() {
+                mutableStateOf("Dashboard")
+            }
+
+            var darkMode by rememberSaveable() {
+                mutableStateOf(false)
+            }
+
+            val myCourses = remember {
+                mutableStateListOf(
+                    Course("Digital communication", "UE24EC341", "Raghavendra MJ", 0.5f),
+                    Course("Digital system design", "UE24EC342", "Sudheendra Kumar", 0.5f),
+                    Course(
+                        "Computer organisation and design",
+                        "UE24EC351",
+                        "Shantameena",
+                        0.8f
+                    ),
+                    Course(
+                        "Computer communication networks",
+                        "UE24EC352",
+                        "Pooja Kenchetty",
+                        0.2f
+                    ),
+                )
+            }
+            val myAssignments = remember {
+                mutableStateListOf(
+
+                    Assignment(
+                        title = "Calculus Problem Set 4",
+                        course = "MATH 201",
+                        dueDate = "2026-10-15",
+                        priority = "High",
+                        isCompleted = false
+                    ),
+                    Assignment(
+                        title = "Data Structures Essay",
+                        course = "CS 311",
+                        dueDate = "2026-10-18",
+                        priority = "Medium",
+                        isCompleted = false
+                    ),
+                    Assignment(
+                        title = "Quantum Physics Lab Report",
+                        course = "PHYS 401",
+                        dueDate = "2026-10-12",
+                        priority = "High",
+                        isCompleted = true
+                    ),
+                    Assignment(
+                        title = "Macroeconomics Case Study",
+                        course = "ECON 102",
+                        dueDate = "2026-10-22",
+                        priority = "Low",
+                        isCompleted = false
+                    ),
+                    Assignment(
+                        title = "Organic Synthesis Worksheet",
+                        course = "CHEM 250",
+                        dueDate = "2026-10-20",
+                        priority = "Medium",
+                        isCompleted = false
+                    )
+                )
+            }
+
+            val toggleAssignment: (Assignment, Boolean) -> Unit = { a, done ->
+                val i = myAssignments.indexOfFirst { it.title == a.title }
+                if (i >= 0) myAssignments[i] = a.copy(isCompleted = done)
+            }
+
+            // list - is now observable- State
+            var CourseItems by remember {
+                mutableStateOf(myCourses)
+            }
+
+            var AssignItems by remember{
+                mutableStateOf(myAssignments)
+            }
+
             StudentOrganiserTheme() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -81,88 +162,6 @@ class MainActivity : ComponentActivity() {
                     },
                     bottomBar = {BottomBar(navController = navC)}
                 ) { innerPadding ->
-
-                    var priority by rememberSaveable() {
-                        mutableStateOf("Dashboard")
-                    }
-
-                    var darkMode by rememberSaveable() {
-                        mutableStateOf(false)
-                    }
-
-                    val myCourses = remember {
-                        mutableStateListOf(
-                            Course("Digital communication", "UE24EC341", "Raghavendra MJ", 0.5f),
-                            Course("Digital system design", "UE24EC342", "Sudheendra Kumar", 0.5f),
-                            Course(
-                                "Computer organisation and design",
-                                "UE24EC351",
-                                "Shantameena",
-                                0.8f
-                            ),
-                            Course(
-                                "Computer communication networks",
-                                "UE24EC352",
-                                "Pooja Kenchetty",
-                                0.2f
-                            ),
-                        )
-                    }
-                    val myAssignments = remember {
-                        mutableStateListOf(
-
-                            Assignment(
-                                title = "Calculus Problem Set 4",
-                                course = "MATH 201",
-                                dueDate = "2026-10-15",
-                                priority = "High",
-                                isCompleted = false
-                            ),
-                            Assignment(
-                                title = "Data Structures Essay",
-                                course = "CS 311",
-                                dueDate = "2026-10-18",
-                                priority = "Medium",
-                                isCompleted = false
-                            ),
-                            Assignment(
-                                title = "Quantum Physics Lab Report",
-                                course = "PHYS 401",
-                                dueDate = "2026-10-12",
-                                priority = "High",
-                                isCompleted = true
-                            ),
-                            Assignment(
-                                title = "Macroeconomics Case Study",
-                                course = "ECON 102",
-                                dueDate = "2026-10-22",
-                                priority = "Low",
-                                isCompleted = false
-                            ),
-                            Assignment(
-                                title = "Organic Synthesis Worksheet",
-                                course = "CHEM 250",
-                                dueDate = "2026-10-20",
-                                priority = "Medium",
-                                isCompleted = false
-                            )
-                        )
-                    }
-
-                    val toggleAssignment: (Assignment, Boolean) -> Unit = { a, done ->
-                        val i = myAssignments.indexOfFirst { it.title == a.title }
-                        if (i >= 0) myAssignments[i] = a.copy(isCompleted = done)
-                    }
-
-                    // list - is now observable- State
-                    var CourseItems by remember {
-                        mutableStateOf(myCourses)
-                    }
-
-                    var AssignItems by remember{
-                        mutableStateOf(myAssignments)
-                    }
-
 
                     //HomeScreen()
                     NavHost(
