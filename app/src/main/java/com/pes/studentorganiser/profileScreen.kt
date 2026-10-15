@@ -1,11 +1,7 @@
 package com.pes.studentorganiser
 
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
@@ -31,9 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 
 @Composable
@@ -47,7 +40,8 @@ fun ProfileScreen(navController: NavHostController,
             {navController.popBackStack()})
         StudentProfile(
             "Shrivatsa", "PES1UG24EC205",
-            "BTech Electronics and Communication"
+            "BTech Electronics and Communication",
+            modifier = modifier
         )
 
         Card(modifier = modifier.padding(20.dp)
@@ -77,20 +71,20 @@ fun StudentProfile(studentName: String, studentId: String,
                    major: String, avatarRes: Int? = null,
                    modifier: Modifier = Modifier) {
 
-    OutlinedCard(modifier = Modifier.fillMaxWidth()
+    OutlinedCard(modifier = modifier.fillMaxWidth()
         .padding(20.dp),
         colors = CardDefaults.outlinedCardColors(
-        containerColor = Color(200,200,255)),
+        containerColor = Color(200,200,255, 100)),
         border = CardDefaults.outlinedCardBorder(true)) {
 
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = modifier.fillMaxWidth()
                 .padding(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Box(
-                modifier = Modifier.size(150.dp)
+                modifier = modifier.size(150.dp)
                     .border(2.dp, Color.Black, CircleShape)
                     .clip(CircleShape)
             ) {

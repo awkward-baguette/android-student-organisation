@@ -19,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 
@@ -41,18 +40,18 @@ fun SettingScreen(navController: NavHostController,
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .background(Color(200, 200, 210))
+                .background(Color(200, 200, 210, 100))
                 .padding(10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
 
-            Row(modifier = Modifier.fillMaxWidth(),
+            Row(modifier = modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(15.dp)) {
                 Text("Dark Mode")
                 Switch(checked = darkMode, onCheckedChange = switchMode)
             }
-            Row(modifier = Modifier.fillMaxWidth(),
+            Row(modifier = modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(15.dp)) {
                 Text("Push notifications")
@@ -61,7 +60,7 @@ fun SettingScreen(navController: NavHostController,
 
             Row(verticalAlignment = Alignment.CenterVertically) { Text("Select Priority")
             Row(
-                modifier = Modifier.padding(all = 20.dp)
+                modifier = modifier.padding(all = 20.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(

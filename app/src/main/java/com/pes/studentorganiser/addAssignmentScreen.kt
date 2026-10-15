@@ -1,6 +1,5 @@
 package com.pes.studentorganiser
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,16 +8,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,10 +29,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 @Composable
 fun AddAssignmentScreen(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -43,9 +46,13 @@ fun AddAssignmentScreen(navController: NavHostController, modifier: Modifier = M
     var course by rememberSaveable() {
         mutableStateOf("")
     }
-    var date by rememberSaveable() {
-        mutableStateOf("")
+
+    var show by rememberSaveable() {
+        mutableStateOf(false)
     }
+
+    var dateState = rememberDatePickerState()
+
     var desc by rememberSaveable() {
         mutableStateOf("")
     }
@@ -55,7 +62,7 @@ fun AddAssignmentScreen(navController: NavHostController, modifier: Modifier = M
     var tobeNotified by remember {
         mutableStateOf(value = false)
     }
-    var priorities = arrayOf("High" , "Medium" , "Low")
+    val priorities = arrayOf("High" , "Medium" , "Low")
 
     Column(modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceEvenly) {
@@ -65,7 +72,7 @@ fun AddAssignmentScreen(navController: NavHostController, modifier: Modifier = M
 
         LazyColumn(modifier = modifier
             .fillMaxSize()
-            .background(Color(200,200,210))
+            .background(Color(200,200,210, 100))
             .padding(10.dp),
             verticalArrangement = Arrangement.spacedBy(5.dp)){
             item {
@@ -99,17 +106,28 @@ fun AddAssignmentScreen(navController: NavHostController, modifier: Modifier = M
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         Text("Due Date")
+                        if(show)
+                        {DatePickerDialog(onDismissRequest = {show = false},
+                            confirmButton = {Button({show = false}){Text("Confirm")} }){
+                            DatePicker(state = dateState, showModeToggle = show)}
+                        }
                         OutlinedTextField(
-                            value = date,
+                            value = dateState.selectedDateMillis?.let { millis ->
+                                val fmt = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                fmt.timeZone = TimeZone.getTimeZone("UTC")
+                                fmt.format(Date(millis))
+                            } ?: "",
+                            onValueChange = {},
                             singleLine = true,
-                            onValueChange = { date = it },
-                            label = { Text("Due Date ") })
-                        Icon(
+                            readOnly = true,
+                            label = {Text("Enter Due Date")})
+                        IconButton(onClick = {show = true})  { Icon(
                             imageVector = Icons.Default.CalendarToday,
                             "Calendar image"
-                        )
+                        )}
+                    }
                 }
-            }
+
 
             item {
                 PrioritySelector(
@@ -148,13 +166,15 @@ fun AddAssignmentScreen(navController: NavHostController, modifier: Modifier = M
                     Button(onClick = {
                         name = ""
                         course = ""
-                        date  = ""
+                        dateState.selectedDateMillis  = null
                         desc = ""
                         selectedPriority = ""
                         tobeNotified = false
                     }) { Text("Cancel") }
                     Button(
-                        enabled = (name.isNotEmpty() and course.isNotEmpty() and date.isNotEmpty()),
+                        enabled = (name.isNotEmpty() and
+                                course.isNotEmpty() and
+                                dateState.toString().isNotEmpty()),
                         onClick = {}) { Text("Save Assignment") }
                 }
             }

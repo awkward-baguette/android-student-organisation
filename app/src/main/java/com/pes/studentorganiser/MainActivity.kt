@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,12 +36,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.pes.studentorganiser.ui.theme.StudentOrganiserTheme
 
@@ -64,6 +67,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navC = rememberNavController()
+
+            val backStackEntry by navC.currentBackStackEntryAsState()
+            val currentRoute = backStackEntry?.destination?.route
 
             var priority by rememberSaveable() {
                 mutableStateOf("Dashboard")
@@ -146,22 +152,30 @@ class MainActivity : ComponentActivity() {
                 mutableStateOf(myAssignments)
             }
 
-            StudentOrganiserTheme() {
+            StudentOrganiserTheme(darkTheme = darkMode) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     floatingActionButton = {
-                        FloatingActionButton(onClick = {
-                            // navigate to 'addTodo'
-                            navC.navigate("add_assignment")
-                        }) {
-                            Icon(
-                                Icons.Default.Add,
-                                contentDescription = null
-                            )
+                        if (currentRoute == "dashboard" || currentRoute == "assignment") {
+                            FloatingActionButton(onClick = {
+                                // navigate to 'addTodo'
+                                navC.navigate("add_assignment")
+                            }) {
+                                Icon(
+                                    Icons.Default.Add,
+                                    contentDescription = null
+                                )
+                            }
                         }
                     },
                     bottomBar = {BottomBar(navController = navC)}
                 ) { innerPadding ->
+
+                    var modifier = Modifier
+                    if(darkMode){
+                        modifier.background(Color.DarkGray)
+                    }
+
 
                     //HomeScreen()
                     NavHost(
@@ -174,23 +188,28 @@ class MainActivity : ComponentActivity() {
                             DashboardScreen(activeCourses = CourseItems,
                                 pendingTasks = AssignItems,
                                 onToggle = toggleAssignment,
-                        navController = navC)
+                        navController = navC,
+                                modifier = modifier)
                         }
                         composable(route = "assignment") {
                             AssignmentScreen(navC,
                                 assignments = myAssignments,
-                                onToggle = toggleAssignment)
+                                onToggle = toggleAssignment,
+                                modifier = modifier)
                         }
                         composable(route = "profile") {
-                            ProfileScreen(navC, gpa=3.8f, credits=48, currentSem = "Spring 2026")
+                            ProfileScreen(navC, gpa=3.8f, credits=48, currentSem = "Spring 2026",
+                                modifier = modifier)
                         }
                         composable(route = "settings") {
                             SettingScreen(navC, priority = priority,
                                 changePriority = {priority = it},
-                                darkMode = darkMode, switchMode = {darkMode = !darkMode})
+                                darkMode = darkMode, switchMode = {darkMode = !darkMode},
+                                modifier = modifier)
                         }
                         composable(route = "add_assignment") {
-                            AddAssignmentScreen(navC)
+                            AddAssignmentScreen(navC,
+                                modifier = modifier)
                         }
                     }
                     //ToDoListScreen(modifier = Modifier.padding(innerPadding))
